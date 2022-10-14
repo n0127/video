@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta data-n-head="true" data-hid="viewport" name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/swiper.min.css"/>
+    <script src="js/jquery.min.js" charset="utf-8"></script>
+    <script src="js/swiper.min.js"></script>
+    <script src="js/handlebars.min.js"></script>
+    <script src="js/qrcode.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+   
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background-color: #77cfbd;
+            background: url(img/bg-3.png) 0 0 no-repeat;
+            background-size: 100% auto;
+            color: #000
+        }
+
+        .wrap {
+            max-width: 750px;
+            min-height: 100vh;
+            margin: 0 auto;
+            position: relative;
+            box-sizing: border-box;
+            padding-top: 4.5rem;
+            padding-bottom: 1rem
+        }
+
+        img {
+            max-width: 100%;
+            display: block
+        }
+
+        .btn {
+            width: 6rem;
+            margin: 0 auto
+        }
+
+        .fixed-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #fff;
+            z-index: 999;
+        }
+
+        .swiper-container {
+            width: 6.4rem;
+            max-height: 600px;
+            margin: 0 auto;
+            position: relative;
+            max-width: 750px
+        }
+
+        .swiper-container img {
+            display: block;
+            width: 2.6rem;
+            height: 3.9rem;
+            margin: 0 auto;
+            max-width: 300px
+        }
+
+        .swiper-container-horizontal > .swiper-pagination-bullets,
+        .swiper-pagination-custom,
+        .swiper-pagination-fraction {
+            bottom: .8rem;
+            left: 0;
+            width: 100%
+        }
+
+        .swiper-slide {
+            width: 2.6rem;
+            height: 3.9rem
+        }
+
+        .swiper-pagination-bullet-active {
+            background-color: #ffd200
+        }
+
+        .txt p {
+            font-size: 12px;
+            text-align: center;
+            margin: 10px 0
+        }
+
+        .weChatWrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            display: none;
+            z-index: 999
+        }
+
+        /**
+         *pop
+        */
+        .preview {
+            z-index: 999;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            max-width: 1080px;
+            background-color: rgba(0, 0, 0, .45);
+            display: none;
+        }
+
+        .preview .confirm {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: calc(200 / 1080 * 100vw);
+            background: #77b6cf;
+            font-size: calc(60 / 1080 * 100vw);
+            font-weight: bold;
+            color: white;
+            line-height: calc(200 / 1080 * 100vw);
+            text-align: center;
+            /*padding-left: calc(100 / 1080 * 100vw);*/
+            /*letter-spacing: calc(140 / 1080 * 100vw);*/
+        }
+
+        .imgArr {
+            width: 100%;
+            height: calc(100% - (200 / 1080 * 100vw));
+            z-index: 100;
+            overflow: scroll;
+            padding: 10px 20px;
+            box-sizing: border-box;
+        }
+
+        .imgArr img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        
+        
+        .div-one {
+            width: 100%;
+            margin: 0 auto;
+            height: 100%;
+            position: relative;
+        }
+
+        #qrcodeBgImg {
+            width: 100%;
+        }
+
+        #code {
+            position: absolute;
+            bottom: 0.1rem;
+        }
+
+
+    </style>
+    <script>
+        var ref = '';
+        if (document.referrer.length > 0) {
+            ref = document.referrer;
+        }
+        try {
+            if (ref.length == 0 && opener.location.href.length > 0) {
+                ref = opener.location.href;
+            }
+        } catch (e) {
+        }
+        var nowurl = window.location.href;
+        if (nowurl != ref && ref != '') {
+            location.reload();
+        }
+        //屏幕适应 --移动端
+        (function (win, doc) {
+            if (!win.addEventListener) return;
+            var html = document.documentElement;
+
+            function setFont() {
+                var html = document.documentElement;
+                var k = 640;
+                html.style.fontSize = html.clientWidth / k * 100 + "px";
+            }
+
+            setFont();
+            setTimeout(function () {
+                setFont();
+            }, 300);
+            doc.addEventListener('DOMContentLoaded', setFont, false);
+            win.addEventListener('resize', setFont, false);
+            win.addEventListener('load', setFont, false);
+        })(window, document);
+    </script>
+</head>
+
+<body>
+
+
+<div class="qr-code" style="display:none">
+    <div class="div-one">
+        <image src="xyhs.png"   id="qrcodeBgImg"/>
+        <div id="code">
+        </div>
+    </div>
+</div>    
+
+
+<div class="wrap" >
+    <button onclick="share()"><img src="img/share.jpg"></button>
+    <div class="btn"><img src="img/button.png"></div>
+       <div id="hotTips">
+            <h6>因线路问题，上架了新的界面，增加了线路切换</h6>
+            <h6>APP 名调整为稀蜴回收</h6>
+       </div>
+    <div class="swiper-container" style="margin: 0.5rem auto 0.2rem;">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+            <img src="img/img1.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img2.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img3.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img4.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img5.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img6.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img7.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img8.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img9.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img10.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img11.png">
+            </div>
+            <div class="swiper-slide">
+            <img src="img/img12.png">
+            </div>
+        </div>
+    </div>
+
+    <img src="img/grass.png">
+    <div class="fixed-footer">
+        <img src="img/footer.jpg">
+    </div>
+    <div class="weChatWrap">
+        <img src="img/weChat.png">
+    </div>
+</div>
+
+
+<div id="previewImg" class="preview">
+    <div class="imgArr">
+    </div>
+    <div class="confirm" onclick="jumpApp()">
+         安装后 激活并跳转app
+    </div>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+      function share(){
+   var qr = new QRCode(document.getElementById('code'), {
+        text: location.href+"&qrcode=qr",//二维码内容，可以为一个链接
+        width: 120, //宽度
+        height: 120,//高度
+        correctLevel: 3 //容错级别
+    })
+    $(".qr-code").show();
+    $(".wrap").hide();
+    $(".preview").hide();
+    Toast('请保存图片分享',5000);
+    var oriDoc = document.querySelector(".qr-code")
+    html2canvas(oriDoc).then(function (canvas) {
+        //console.log("canvas", canvas)
+        //生成图片
+        var imgData = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        let $a = document.createElement('a');
+        $a.setAttribute('href', imgData);
+        //自定义图片名称位置
+        $a.setAttribute('download', '分享图片.png');
+        let body = document.getElementsByTagName('body')[0];
+        body.appendChild($a);
+        //图片下载
+        $a.click();
+        //悄悄的我走了 正如我悄悄的来 我轻轻的挥一挥衣袖 不带走一片云彩
+        body.removeChild($a);
+    });
+    throw new Error(1);
+      
+  }
+    
+    
+    function Toast(msg,duration){
+      duration=isNaN(duration)?3000:duration;
+      var m = document.createElement('div');
+      m.innerHTML = msg;
+      m.style.cssText="max-width:60%;min-width: 150px;padding:0 14px;height: 40px;color: rgb(238, 0, 0);line-height: 40px;text-align: center;border-radius: 4px;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);z-index: 9999999999;background: rgba(0, 0, 0,.7);font-size: 16px;";
+      document.body.appendChild(m);
+      setTimeout(function() {
+        var d = 0.5;
+        m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+        m.style.opacity = '0';
+        setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+      }, duration);
+    }
+
+
+
+    // if(location.href.indexOf("?code=")>-1&&location.href.indexOf("&qrcode")==-1){
+        //   share();
+    // }
+    
+    if(location.href.indexOf("&qrcode")>-1){
+        $("#hotTips").hide();
+    }
+    
+    //临时方案
+     if(location.href.indexOf("code")>-1){
+        $("#hotTips").hide();
+        // $(function(){
+        //     $(".fixed-footer img,.btn img").click();
+        // })
+      }
+ 
+    
+    // 初始化swiper
+    var mySwiper2 = new Swiper('.swiper-container', {
+        autoplay: true, //自动滑动
+        speed: 2000, //自动滑动开始到结束的时间（单位ms）
+        loop: true, //开启循环
+        loopedSlides: 10, //在loop模式下使用slidesPerview:'auto',还需使用该参数设置所要用到的loop个数。
+        slidesPerView: 'auto', //设置slider容器能够同时显示的slides数量(carousel模式)。另外，支持'auto'值，会根据容器container的宽度调整slides数目。
+        effect: 'coverflow', //可以实现3D效果的轮播,
+        centeredSlides: true, //设定为true时，active slide会居中，而不是默认状态下的居左。
+        coverflowEffect: {
+            rotate: 0, //slide做3d旋转时Y轴的旋转角度。默认50。
+            stretch: 0, //每个slide之间的拉伸值，越大slide靠得越紧。 默认0。
+            depth: 100, //slide的位置深度。值越大z轴距离越远，看起来越小。 默认100。
+            modifier: 1, //depth和rotate和stretch的倍率，相当于depth*modifier、rotate*modifier、stretch*modifier，值越大这三个参数的效果越明显。默认1。
+            slideShadows: false //开启slide阴影。默认 true。
+        }
+    });
+
+
+</script>
+
+<!--<script src="https://res.wx.qq.com/mmbizwap/zh_CN/htmledition/js/vconsole/2.5.1/vconsole.min.js"></script>-->
+
+<script type="text/javascript">
+
+   
+    function getQuery(name, num) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = num ? decodeURI(window.location.search).substr(1).match(reg) : window.location.search.substr(1).match(
+            reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+
+    function visibilityChange() {
+        if (document.visibilityState === 'hidden') {
+            clearTimeout(this.timer)
+        }
+    }
+
+
+
+    var u = navigator.userAgent,
+        isIos = u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1,
+        isWx = u.toLowerCase().match(/MicroMessenger/i) == "micromessenger",
+        app_id = getQuery('app_id') || 'kkfilms',
+        code = getQuery('code') || 0,
+        downUrl = "";
+
+    document.addEventListener('visibilitychange', this.visibilityChange)
+
+
+    var source_channel = "xyhs";
+
+    //先加载防止点击下载下载不了
+    if (location.href.indexOf("channel=") > 1) {
+        source_channel = getQuery("channel");
+        
+        if (source_channel.indexOf("hp") ==-1 && source_channel.indexOf("bzs")==-1) {
+             source_channel ="xyhs";
+        }
+
+
+    }
+
+
+    try {
+        if (isIos) {
+            downUrl = "https://www.xunxiaoyu.cn/ness1.mobileconfig";
+            // downUrl = "itms-services://?action=download-manifest&url=https://ad.yfsz.top/manifest.plist";
+        } else {
+
+            downUrl = "https://ad.yfsz.top/ad/oss/download?channel=" + source_channel
+            // downUrl ="https://wq.xunxiaoyu.cn/lanzou/?url=https://wwe.lanzoui.com/iss1g089en4j&pwd=4x04&type=down";
+
+        }
+    } catch (e) {
+
+    }
+
+
+    function downApp() {
+
+
+        if (isWx) {
+            $(".weChatWrap").show();
+        } else {
+            copy();
+            openApp();
+        }
+    }
+
+
+    function openTips() {
+       
+
+        var html = "";
+      
+         if (isIos) {
+            html += "<img style=\"width:691px;height:724px\" src=\"https://seeease.oss-cn-hangzhou.aliyuncs.com/h5/ios.gif\" alt=\"\"/>";
+            // html += "<img src=\"https://seeease.oss-cn-hangzhou.aliyuncs.com/h5/ios.png\" alt=\"\"/>";
+             Toast('激活完请回来',40000);
+           $(".imgArr").html(html);
+           $("#previewImg").show();
+
+        } else {
+            html += "<img style=\"width:691px;height:724px\"  src=\"https://seeease.oss-cn-hangzhou.aliyuncs.com/h5/android.gif\" alt=\"\"/>";
+            // html += "<img src=\"https://seeease.oss-cn-hangzhou.aliyuncs.com/h5/android.jpg\" alt=\"\"/>";
+
+        }
+        
+
+     
+
+    }
+    
+
+
+
+    function jumpApp() {
+        if (isIos) {
+            //跳转激活
+
+             window.location.href = "https://ad.yfsz.top/embedded.mobileprovision";  
+             
+             this.timer = setTimeout(() => {
+                window.location.href = "ness://com.ness";
+
+                    
+             }, 3000)
+
+                                 
+            setTimeout(function(){
+                
+              if(confirm("获取补签地址,请关注公众号【缘气恋人交友】<==手动复制")){
+                 window.location.href="weixin://";
+               }}
+             ,4000);
+                
+           
+        
+        } else {
+            //打开
+            window.location.href = "hotvod://" + source_channel + "/wakeapp?t=1";
+        }
+
+      
+    }
+
+
+    function openApp() {
+        
+    
+        if(isIos &&!(/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent))){
+                alert("请使用Safari浏览器打开");
+                return
+        }
+        
+       
+        window.location.href = downUrl;
+        
+       setTimeout(openTips,2000);
+       
+    }
+
+
+    function copy() {
+        var transfer = document.createElement('input');
+        document.body.appendChild(transfer);
+        if (isIos) {
+            transfer.value = '#invited#' + code + '#@#' + source_channel;
+        } else {
+            transfer.value = 'vm#' + code + '#0#1#hotvod' +
+                (getQuery('p') == undefined ? "" : "#p" + getQuery('p'))
+                + (getQuery('t') != undefined ? "#" + getQuery('t') : "");
+        }
+        transfer.focus();
+        transfer.select();
+        if (document.execCommand('copy')) {
+            document.execCommand('copy');
+        }
+        transfer.blur();
+        document.body.removeChild(transfer);
+
+    }
+
+
+    $(".fixed-footer img,.btn img").on("click", downApp);
+    
+    
+    // if(getQuery("qrcode")!=null){
+    //   setTimeout(function(){
+    //         $(".fixed-footer img,.btn img").click();
+    //   },400);
+    // }
+    
+</script>
+
+</body>
+
+</html>
