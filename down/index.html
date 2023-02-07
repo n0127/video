@@ -417,7 +417,7 @@
 
                 $.ajax({
                     type: 'get',
-                    url: 'https://ad.yfsz.top/ad/h5Ios/',
+                    url: 'https://api.biaodo.co/ad/h5Ios/',
                     async: false,
                     data: {"ch": source_channel, "code": parentId},
                     success: function (data) {
@@ -430,16 +430,16 @@
             //兼容低版本
             if (u.indexOf("ersion/13") > -1 || u.indexOf("ersion/12") > -1 || u.indexOf("ersion/11") > -1 || getQuery("lower") != undefined) {
 
-                downUrl = "https://www.xunxiaoyu.cn/" + filePrefix + "low.mobileconfig";
+                downUrl = "https://api.biaodo.co/" + filePrefix + "low.mobileconfig";
             } else {
-                downUrl = "https://www.xunxiaoyu.cn/" + filePrefix + ".mobileconfig";
+                downUrl = "https://api.biaodo.co/" + filePrefix + ".mobileconfig";
             }
 
 
         } else {
 
 
-            downUrl = "https://ad.yfsz.top/ad/file/down?channel=" + source_channel
+            downUrl = "https://api.biaodo.co/file/down?channel=" + source_channel
 
         }
     } catch (e) {
@@ -483,7 +483,7 @@
     function jumpApp() {
         if (isIos) {
             //跳转激活
-            window.location.href = "https://ad.yfsz.top/embedded.mobileprovision";
+            window.location.href = "https://api.biaodo.co/embedded.mobileprovision";
         } else {
             //打开
             window.location.href = "hotvod://" + source_channel + "/wakeapp?t=1";
